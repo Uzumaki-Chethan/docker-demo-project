@@ -9,7 +9,7 @@ function App() {
   const [password,setPassword]=useState("");
   const [message,setMessage]=useState("");
 
-  const API="http://backend:5000/api/auth";
+const API="http://localhost:5000/api/auth";
 
   const registerUser=async()=>{
     try{

@@ -1,19 +1,297 @@
-.container{
-  width:300px;
-  margin:100px auto;
-  text-align:center;
-  font-family:Arial;
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────────── */
+:root {
+  --bg:          #080b10;
+  --surface:     #0d1117;
+  --border:      #1e2a3a;
+  --border-glow: #1e4a7a;
+  --text:        #e2eaf4;
+  --muted:       #4a6080;
+  --accent:      #00d4ff;
+  --accent-dim:  #0099cc;
+  --success:     #00ffaa;
+  --danger:      #ff4d6d;
+  --gradient:    linear-gradient(135deg, #00d4ff 0%, #0055ff 100%);
 }
 
-input{
-  display:block;
-  width:100%;
-  padding:10px;
-  margin:10px 0;
+/* ── Reset & Base ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-button{
-  padding:10px 15px;
-  margin:5px;
-  cursor:pointer;
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
+
+/* ── Animated Grid Background ─────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridDrift 20s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Radial glow orb ──────────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 85, 255, 0.12) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gridDrift {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(40px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.1); }
+}
+
+/* ── Card Container ───────────────────────────────────────────── */
+.container {
+  position: relative;
+  z-index: 1;
+  width: min(420px, calc(100vw - 32px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 48px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: cardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  /* Soft inner glow */
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.06),
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+/* Corner accent lines */
+.container::before,
+.container::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--accent);
+  border-style: solid;
+  opacity: 0.7;
+}
+.container::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; border-radius: 16px 0 0 0; }
+.container::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; border-radius: 0 0 16px 0; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+/* ── Heading ──────────────────────────────────────────────────── */
+h2 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Docker-style whale icon via pseudo-element */
+h2::before {
+  content: '🐳';
+  font-size: 1.3rem;
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.6));
+}
+
+/* Divider line under heading */
+.container > h2 + * {
+  /* gap already handles spacing */
+}
+
+/* Subtle label strip above inputs */
+.container::after {
+  /* corner accent reused above; label handled inline */
+}
+
+/* ── Inputs ───────────────────────────────────────────────────── */
+input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 13px 16px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.85rem;
+  outline: none;
+  transition:
+    border-color 0.25s,
+    background   0.25s,
+    box-shadow   0.25s;
+  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+input:nth-of-type(1) { animation-delay: 0.1s; }
+input:nth-of-type(2) { animation-delay: 0.18s; }
+input:nth-of-type(3) { animation-delay: 0.26s; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+input::placeholder {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+input:focus {
+  border-color: var(--accent-dim);
+  background: rgba(0, 212, 255, 0.04);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1), 0 0 20px rgba(0, 212, 255, 0.05);
+}
+
+/* ── Button Row ───────────────────────────────────────────────── */
+.container > button {
+  position: relative;
+  width: 100%;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.25s, opacity 0.2s;
+  animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  isolation: isolate;
+  /* Text must always be above ::before gradient */
+  color: inherit;
+}
+
+/* Register — outlined / ghost */
+button:nth-of-type(1) {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border-glow);
+  animation-delay: 0.34s;
+  /* text stays visible above ::before via z-index on the label */
+}
+
+/* invisible text layer wrapper trick: nudge text above pseudo */
+button:nth-of-type(1)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+}
+
+button:nth-of-type(1):hover {
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+button:nth-of-type(1):hover::before { opacity: 1; }
+
+/* Login — solid filled */
+button:nth-of-type(2) {
+  background: var(--gradient);
+  color: #fff;
+  animation-delay: 0.40s;
+  box-shadow: 0 4px 20px rgba(0, 85, 255, 0.35);
+}
+
+button:nth-of-type(2):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
+  opacity: 0.92;
+}
+
+button:active { transform: translateY(0) scale(0.98); }
+
+/* Shimmer sweep on hover */
+button::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.12), transparent);
+  transition: left 0.5s ease;
+}
+button:hover::after { left: 125%; }
+
+/* ── Message ──────────────────────────────────────────────────── */
+p {
+  font-size: 0.78rem;
+  text-align: center;
+  min-height: 20px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: color 0.3s, background 0.3s;
+}
+
+/* Green flash on success keywords */
+p:not(:empty) {
+  background: rgba(0, 255, 170, 0.05);
+  color: var(--success);
+  border: 1px solid rgba(0, 255, 170, 0.15);
+  animation: msgIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Red flash for error keywords (JS-set class) */
+p.error {
+  background: rgba(255, 77, 109, 0.08);
+  color: var(--danger);
+  border-color: rgba(255, 77, 109, 0.2);
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scrollbar (if needed) ────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-glow); border-radius: 4px; }
