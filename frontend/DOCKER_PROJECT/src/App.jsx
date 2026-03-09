@@ -9,7 +9,7 @@ function App() {
   const [password,setPassword]=useState("");
   const [message,setMessage]=useState("");
 
-const API="http://localhost:5000/api/auth";
+const API=import.meta.env.VITE_API_URL;
 
   const registerUser=async()=>{
     try{
