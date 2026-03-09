@@ -9,7 +9,7 @@ function App() {
   const [password,setPassword]=useState("");
   const [message,setMessage]=useState("");
 
-const API=import.meta.env.VITE_API_URL;
+const API="https://docker-demo-8leq.onrender.com/api/auth";
 
   const registerUser=async()=>{
     try{
